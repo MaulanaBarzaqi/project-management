@@ -39,4 +39,5 @@ func Setup(
 
 	boarGroup := api.Group("/boards")
 	boarGroup.Post("/", bc.CreateBoard)
+	boarGroup.Put("/:id", bc.UpdateBoard)
 }
