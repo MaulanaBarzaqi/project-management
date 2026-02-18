@@ -41,4 +41,5 @@ func Setup(
 	boarGroup.Post("/", bc.CreateBoard)
 	boarGroup.Put("/:id", bc.UpdateBoard)
 	boarGroup.Post("/:id/members", bc.AddBoardMembers)
+	boarGroup.Delete("/:id/members", bc.RemoveBoardMembers)
 }
