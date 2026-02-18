@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"math"
+	"strconv"
+
 	"github.com/MaulanaBarzaqi/project-management/models"
 	"github.com/MaulanaBarzaqi/project-management/services"
 	"github.com/MaulanaBarzaqi/project-management/utils"
@@ -93,3 +96,30 @@ func (c *BoardController) RemoveBoardMembers(ctx *fiber.Ctx) error {
 	return utils.Success(ctx, "Success to remove member", nil)
 }
 
+func (c *BoardController) GetMyBoardPaginate(ctx *fiber.Ctx) error {
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userID := claims["pub_id"].(string)
+
+	page, _ := strconv.Atoi(ctx.Query("page", "1"))
+	limit, _ := strconv.Atoi(ctx.Query("limit", "10"))
+	offset := (page - 1) * limit
+
+	filter := ctx.Query("filter", "")
+	sort := ctx.Query("sort", "")
+
+	board, total, err := c.service.GetAllByUserPaginate(userID,filter,sort, limit, offset)
+	if err != nil {
+		return utils.InternalServerError(ctx, "failed to get board data", err.Error())
+	}
+
+	meta := utils.PaginationMeta{
+		Page: page,
+		Limit: limit,
+		Total: int(total),
+		TotalPages: int(math.Ceil(float64(total) / float64(limit))),
+		Filter: filter,
+		Sort: sort,
+	}
+	return utils.SuccessPagination(ctx, "Success to Get Board data", board, meta)
+}
