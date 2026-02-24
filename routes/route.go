@@ -48,4 +48,5 @@ func Setup(
 	// list
 	listGroup := api.Group("/lists")
 	listGroup.Post("/", lc.CreateList)
+	listGroup.Put("/:id", lc.UpdateList)
 }

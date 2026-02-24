@@ -5,6 +5,7 @@ import (
 	"github.com/MaulanaBarzaqi/project-management/services"
 	"github.com/MaulanaBarzaqi/project-management/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type ListController struct {
@@ -24,4 +25,32 @@ func (c *ListController) CreateList(ctx *fiber.Ctx) error {
 		return utils.BadRequest(ctx, "failed to create list", err.Error())
 	}
 	return utils.Success(ctx, "success to created list", list)
+}
+
+func (c *ListController) UpdateList(ctx *fiber.Ctx) error {
+	publicID := ctx.Params("id")
+	list := new(models.List)
+
+	if err := ctx.BodyParser(list); err != nil {
+		return utils.BadRequest(ctx, "failed to parsing data", err.Error())
+	}
+	// validasi kalau benar public id format uuid
+	if _, err := uuid.Parse(publicID); err != nil {
+		return utils.BadRequest(ctx, "id is not valid", err.Error())
+	}
+	// verifikasi list kalu beneran ada yang mau diupdate
+	existingList, err := c.service.GetByPublicID(publicID)
+	if err != nil {
+		return utils.NotFound(ctx, "list not found", err.Error())
+	}
+	list.InternalID = existingList.InternalID
+	list.PublicID = existingList.PublicID
+	if err := c.service.Update(list); err != nil {
+		return utils.BadRequest(ctx, "failed to update list", err.Error())
+	}
+	updatedList, err := c.service.GetByPublicID(publicID)
+	if err != nil {
+		return utils.NotFound(ctx, "list not found", err.Error())
+	}
+	return utils.Success(ctx, "success to update list", updatedList)
 }
