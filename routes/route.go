@@ -45,6 +45,7 @@ func Setup(
 	boarGroup.Post("/:id/members", bc.AddBoardMembers)
 	boarGroup.Delete("/:id/members", bc.RemoveBoardMembers)
 	boarGroup.Get("/my", bc.GetMyBoardPaginate)
+	boarGroup.Get("/:board_id/lists",lc.GetListOnBoard)
 	// list
 	listGroup := api.Group("/lists")
 	listGroup.Post("/", lc.CreateList)

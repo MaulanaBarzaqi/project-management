@@ -54,7 +54,7 @@ func (r *listRepository) GetCardPosition(listPublicID string) ([]uuid.UUID, erro
 
 func (r *listRepository) FindByBoardID(boardID string) ([]models.List, error) {
 	var list []models.List
-	err := config.DB.Where("board_public_id ?", boardID).Order("internal_id ASC").Find(&list).Error
+	err := config.DB.Where("board_public_id = ?", boardID).Order("internal_id ASC").Find(&list).Error
 
 	return list, err
 }
