@@ -15,6 +15,7 @@ func Setup(
 	app *fiber.App, 
 	uc *controllers.UserController,
 	bc *controllers.BoardController,
+	lc *controllers.ListController,
 	) {
 	err := godotenv.Load()
 	if err != nil {
@@ -31,16 +32,20 @@ func Setup(
 			return utils.Unauthorized(c,"error unauthorized", err.Error())
 		},
 	}))
+	// user
 	userGroup := api.Group("/users")
 	userGroup.Get("/page", uc.GetUserPagination)
 	userGroup.Get("/:id", uc.GetUser)
 	userGroup.Put("/:id", uc.UpdateUser)
 	userGroup.Delete("/:id", uc.DeleteUser)
-
+	// board
 	boarGroup := api.Group("/boards")
 	boarGroup.Post("/", bc.CreateBoard)
 	boarGroup.Put("/:id", bc.UpdateBoard)
 	boarGroup.Post("/:id/members", bc.AddBoardMembers)
 	boarGroup.Delete("/:id/members", bc.RemoveBoardMembers)
 	boarGroup.Get("/my", bc.GetMyBoardPaginate)
+	// list
+	listGroup := api.Group("/lists")
+	listGroup.Post("/", lc.CreateList)
 }
