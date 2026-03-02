@@ -16,6 +16,7 @@ func Setup(
 	uc *controllers.UserController,
 	bc *controllers.BoardController,
 	lc *controllers.ListController,
+	cc *controllers.CardController,
 	) {
 	err := godotenv.Load()
 	if err != nil {
@@ -51,4 +52,7 @@ func Setup(
 	listGroup.Post("/", lc.CreateList)
 	listGroup.Put("/:id", lc.UpdateList)
 	listGroup.Delete("/:id", lc.DeleteList)
+	// card
+	cardGroup := api.Group("/cards")
+	cardGroup.Post("/", cc.CreateCard)
 }

@@ -32,8 +32,12 @@ func main() {
 	listRepo := repositories.NewListRepository()
 	listService := services.NewListService(listRepo, listPosRepo, boardRepo)
 	listController := controllers.NewListController(listService)
+	// card
+	cardRepo := repositories.NewCardRepository()
+	cardService := services.NewCardService(cardRepo, listRepo, userRepo)
+	cardController := controllers.NewCardController(cardService) 
 
-	routes.Setup(app,userController, boardController, listController)
+	routes.Setup(app,userController, boardController, listController, cardController)
 
 	port := config.AppConfig.AppPort
 	log.Println("server is running on port :", port)
