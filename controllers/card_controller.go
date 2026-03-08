@@ -91,3 +91,16 @@ func (c *CardController) DeleteCard(ctx *fiber.Ctx) error {
 	}
 	return utils.Success(ctx, "success to delete card", PublicID)
 }
+
+func (c *CardController) GetCardDetail(ctx *fiber.Ctx) error {
+	cardPublicID := ctx.Params("id")
+	
+	card, err := c.services.GetByPublicID(cardPublicID)
+	if err != nil {
+		return utils.InternalServerError(ctx, "error fetch detail card", err.Error())
+	}
+	if card == nil {
+		return utils.NotFound(ctx, "card not found", err.Error())
+	}
+	return utils.Success(ctx, "success to fetch card", card)
+}
