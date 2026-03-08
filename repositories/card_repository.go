@@ -41,14 +41,14 @@ func (r *cardRepository) Delete(id uint) error {
 
 func (r *cardRepository) FindByID(id uint) (*models.Card, error) {
 	var card models.Card
-	err := config.DB.Preload("Labels").Preload("Assigness").First(&card, id).Error
+	err := config.DB.Preload("Labels").Preload("Assignees").First(&card, id).Error
 
 	return &card, err
 }
 
 func (r *cardRepository) FindByPublicID(publicID string) (*models.Card, error) {
 	var card models.Card
-	if err := config.DB.Preload("Assignees.user", func (tx *gorm.DB) *gorm.DB {
+	if err := config.DB.Preload("Assignees.User", func (tx *gorm.DB) *gorm.DB {
 		return tx.Select("internal_id", "public_id", "name", "email")
 	}).Preload("Attachments").Where("public_id = ?", publicID).First(&card).Error; err != nil {
 		return nil, err
