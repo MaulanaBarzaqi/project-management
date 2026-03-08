@@ -56,4 +56,5 @@ func Setup(
 	cardGroup := api.Group("/cards")
 	cardGroup.Post("/", cc.CreateCard)
 	cardGroup.Put("/:id", cc.UpdateCard)
+	cardGroup.Delete("/:id", cc.DeleteCard)
 }
